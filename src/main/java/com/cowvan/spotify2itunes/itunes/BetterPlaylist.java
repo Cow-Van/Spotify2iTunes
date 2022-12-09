@@ -1,4 +1,4 @@
-package com.cowvan.spotify2itunes.betterentity;
+package com.cowvan.spotify2itunes.itunes;
 
 import com4j.itunes.IITUserPlaylist;
 import info.schnatterer.itunes4j.entity.Playlist;
