@@ -1,7 +1,7 @@
 package com.cowvan.spotify2itunes.utils;
 
 import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -13,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RequestUtilsTest {
-    @Test
+    @RepeatedTest(5)
     public void test_GetRequest() throws URISyntaxException, IOException, InterruptedException {
         Map<String, String> parameters = new HashMap<>();
-        parameters.put(randomString(10), randomString(10));
-        parameters.put(randomString(10), randomString(10));
-        parameters.put(randomString(10), randomString(10));
+        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
+        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
+        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
 
         HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/get", parameters);
         JSONObject body = ParseUtils.parseJSONString(String.valueOf(ParseUtils.parseJSONString(response.body()).get("args")));
@@ -29,8 +29,20 @@ public class RequestUtilsTest {
         }
     }
 
-    @Test
-    public void test_PostRequest() {
+    @RepeatedTest(5)
+    public void test_PostRequest() throws URISyntaxException, IOException, InterruptedException {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
+        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
+        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
+
+        HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/post", parameters);
+        JSONObject body = ParseUtils.parseJSONString(String.valueOf(ParseUtils.parseJSONString(response.body()).get("data")));
+
+        for (String key : parameters.keySet()) {
+            assertTrue(body.keySet().contains(key));
+            assertEquals(body.get(key), parameters.get(key));
+        }
     }
 
     private String randomString(int length) {
