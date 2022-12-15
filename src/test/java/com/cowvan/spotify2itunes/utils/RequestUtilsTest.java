@@ -22,7 +22,7 @@ public class RequestUtilsTest {
         parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
 
         HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/get", null, parameters);
-        JSONObject data = ParseUtils.parseJSONString(response.body()).getJSONObject("args");
+        JSONObject data = ParseUtils.parseJSONStringToJSONObject(response.body()).getJSONObject("args");
 
         for (String key : parameters.keySet()) {
             assertTrue(data.keySet().contains(key));
@@ -38,7 +38,7 @@ public class RequestUtilsTest {
         parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
 
         HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/post", null, parameters);
-        JSONObject data = ParseUtils.parseJSONString(response.body()).getJSONObject("json");
+        JSONObject data = ParseUtils.parseJSONStringToJSONObject(response.body()).getJSONObject("json");
 
         for (String key : parameters.keySet()) {
             assertTrue(data.keySet().contains(key));
@@ -53,8 +53,8 @@ public class RequestUtilsTest {
         headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
         headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
 
-        HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/anything", headers, null);
-        JSONObject responseRequestHeaders = ParseUtils.parseJSONString(ParseUtils.parseJSONString(response.body()).get("headers").toString()); // Headers sent in the request that httpbin.org is
+        HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/anything", headers, (Map<String, String>) null);
+        JSONObject responseRequestHeaders = ParseUtils.parseJSONStringToJSONObject(ParseUtils.parseJSONStringToJSONObject(response.body()).get("headers").toString()); // Headers sent in the request that httpbin.org is
 
         for (String key : headers.keySet()) {
             assertEquals(responseRequestHeaders.get(key), headers.get(key));
@@ -68,8 +68,8 @@ public class RequestUtilsTest {
         headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
         headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
 
-        HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/anything", headers, null);
-        JSONObject responseRequestHeaders = ParseUtils.parseJSONString(ParseUtils.parseJSONString(response.body()).get("headers").toString()); // Headers sent in the request that httpbin.org is
+        HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/anything", headers, (Map<String, String>) null);
+        JSONObject responseRequestHeaders = ParseUtils.parseJSONStringToJSONObject(ParseUtils.parseJSONStringToJSONObject(response.body()).get("headers").toString()); // Headers sent in the request that httpbin.org is
         // sending back in the response body
         for (String key : headers.keySet()) {
             assertEquals(responseRequestHeaders.get(key), headers.get(key));
@@ -78,14 +78,14 @@ public class RequestUtilsTest {
 
     @Test
     public void test_GetRequest_Null() throws URISyntaxException, IOException, InterruptedException {
-        HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/get", null, null);
+        HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/get", null, (Map<String, String>) null);
 
         assertEquals(response.statusCode(), 200);
     }
 
     @Test
     public void test_PostRequest_Null() throws URISyntaxException, IOException, InterruptedException {
-        HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/post", null, null);
+        HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/post", null, (Map<String, String>) null);
 
         assertEquals(response.statusCode(), 200);
     }

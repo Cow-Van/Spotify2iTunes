@@ -11,11 +11,11 @@ public final class ParseUtils {
     private ParseUtils() {
     }
 
-    public static JSONObject parseJSONString(String JSONString) {
+    public static JSONObject parseJSONStringToJSONObject(String JSONString) {
         return new JSONObject(JSONString);
     }
 
-    public static String parseURLParameters(Map<String, String> parameters) throws UnsupportedEncodingException {
+    public static String parseMapToASCIIString(Map<String, String> parameters) throws UnsupportedEncodingException {
         StringBuilder parameterStringBuilder = new StringBuilder();
 
         for (String key : parameters.keySet()) {
@@ -27,5 +27,9 @@ public final class ParseUtils {
         }
 
         return parameterStringBuilder.toString();
+    }
+
+    public static String parseMapToJSONString(Map<?, ?> map) {
+        return new JSONObject(map).toString();
     }
 }
