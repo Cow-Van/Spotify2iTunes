@@ -1,5 +1,6 @@
 package com.cowvan.spotify2itunes.utils;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -14,31 +15,47 @@ public final class RequestUtils {
     private RequestUtils() {
     }
 
-    public static HttpResponse<String> getRequest(String url, Map<String, String> parameters) throws URISyntaxException, IOException, InterruptedException {
+    public static HttpResponse<String> getRequest(String url, @Nullable Map<String, String> headers, @Nullable Map<String, String> parameters) throws URISyntaxException, IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder()
                 .build();
 
-        String _url = url + "?" + ParseUtils.parseURLParameters(parameters);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+                .GET();
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(_url))
-                .GET()
-                .build();
+        if (parameters != null) {
+            requestBuilder.uri(new URI(url + "?" + ParseUtils.parseURLParameters(parameters)));
+        } else {
+            requestBuilder.uri(new URI(url));
+        }
 
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                requestBuilder.setHeader(key, headers.get(key));
+            }
+        }
+
+        return client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
     }
 
-    public static HttpResponse<String> postRequest(String url, Map<String, String> parameters) throws URISyntaxException, IOException, InterruptedException {
+    public static HttpResponse<String> postRequest(String url, @Nullable Map<String, String> headers, @Nullable Map<String, String> parameters) throws URISyntaxException, IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder()
                 .build();
 
-        JSONObject requestData = new JSONObject(parameters);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+                .uri(new URI(url));
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(url))
-                .POST(HttpRequest.BodyPublishers.ofString(requestData.toString()))
-                .build();
+        if (parameters != null) {
+            requestBuilder.POST(HttpRequest.BodyPublishers.ofString(new JSONObject(parameters).toString()));
+        } else {
+            requestBuilder.POST(HttpRequest.BodyPublishers.ofString(""));
+        }
 
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                requestBuilder.setHeader(key, headers.get(key));
+            }
+        }
+
+        return client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
     }
 }

@@ -2,6 +2,7 @@ package com.cowvan.spotify2itunes.utils;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -14,35 +15,79 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RequestUtilsTest {
     @RepeatedTest(5)
-    public void test_GetRequest() throws URISyntaxException, IOException, InterruptedException {
+    public void test_GetRequest_ParametersOnly() throws URISyntaxException, IOException, InterruptedException {
         Map<String, String> parameters = new HashMap<>();
-        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
-        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
-        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
+        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
+        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
+        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
 
-        HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/get", parameters);
-        JSONObject body = ParseUtils.parseJSONString(String.valueOf(ParseUtils.parseJSONString(response.body()).get("args")));
+        HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/get", null, parameters);
+        JSONObject data = ParseUtils.parseJSONString(response.body()).getJSONObject("args");
 
         for (String key : parameters.keySet()) {
-            assertTrue(body.keySet().contains(key));
-            assertEquals(body.get(key), parameters.get(key));
+            assertTrue(data.keySet().contains(key));
+            assertEquals(data.get(key), parameters.get(key));
         }
     }
 
     @RepeatedTest(5)
-    public void test_PostRequest() throws URISyntaxException, IOException, InterruptedException {
+    public void test_PostRequest_ParametersOnly() throws URISyntaxException, IOException, InterruptedException {
         Map<String, String> parameters = new HashMap<>();
-        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
-        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
-        parameters.put(randomString((int) (Math.random() * 100)), randomString((int) (Math.random() * 100)));
+        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
+        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
+        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
 
-        HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/post", parameters);
-        JSONObject body = ParseUtils.parseJSONString(String.valueOf(ParseUtils.parseJSONString(response.body()).get("data")));
+        HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/post", null, parameters);
+        JSONObject data = ParseUtils.parseJSONString(response.body()).getJSONObject("json");
 
         for (String key : parameters.keySet()) {
-            assertTrue(body.keySet().contains(key));
-            assertEquals(body.get(key), parameters.get(key));
+            assertTrue(data.keySet().contains(key));
+            assertEquals(data.get(key), parameters.get(key));
         }
+    }
+
+    @RepeatedTest(5)
+    public void test_GetRequest_HeadersOnly() throws URISyntaxException, IOException, InterruptedException {
+        Map<String, String> headers = new HashMap<>();
+        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
+
+        HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/anything", headers, null);
+        JSONObject responseRequestHeaders = ParseUtils.parseJSONString(ParseUtils.parseJSONString(response.body()).get("headers").toString()); // Headers sent in the request that httpbin.org is
+
+        for (String key : headers.keySet()) {
+            assertEquals(responseRequestHeaders.get(StringUtils.capitalize(key)), headers.get(key));
+        }
+    }
+
+    @RepeatedTest(5)
+    public void test_PostRequest_HeadersOnly() throws URISyntaxException, IOException, InterruptedException {
+        Map<String, String> headers = new HashMap<>();
+        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
+
+        HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/anything", headers, null);
+        JSONObject responseRequestHeaders = ParseUtils.parseJSONString(ParseUtils.parseJSONString(response.body()).get("headers").toString()); // Headers sent in the request that httpbin.org is
+        // sending back in the response body
+        for (String key : headers.keySet()) {
+            assertEquals(responseRequestHeaders.get(StringUtils.capitalize(key)), headers.get(key));
+        }
+    }
+
+    @Test
+    public void test_GetRequest_Null() throws URISyntaxException, IOException, InterruptedException {
+        HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/get", null, null);
+
+        assertEquals(response.statusCode(), 200);
+    }
+
+    @Test
+    public void test_PostRequest_Null() throws URISyntaxException, IOException, InterruptedException {
+        HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/post", null, null);
+
+        assertEquals(response.statusCode(), 200);
     }
 
     private String randomString(int length) {
@@ -53,6 +98,16 @@ public class RequestUtilsTest {
 
         for (int i = 0; i < length; i++) {
             stringBuilder.append((char) (Math.random() * (max - min) + min));
+        }
+
+        return stringBuilder.toString();
+    }
+
+    private String randomString(int minChar, int maxChar, int length) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            stringBuilder.append((char) (Math.random() * (maxChar - minChar) + minChar));
         }
 
         return stringBuilder.toString();
