@@ -49,30 +49,30 @@ public class RequestUtilsTest {
     @RepeatedTest(5)
     public void test_GetRequest_HeadersOnly() throws URISyntaxException, IOException, InterruptedException {
         Map<String, String> headers = new HashMap<>();
-        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
-        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
-        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
 
         HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/anything", headers, null);
         JSONObject responseRequestHeaders = ParseUtils.parseJSONString(ParseUtils.parseJSONString(response.body()).get("headers").toString()); // Headers sent in the request that httpbin.org is
 
         for (String key : headers.keySet()) {
-            assertEquals(responseRequestHeaders.get(StringUtils.capitalize(key)), headers.get(key));
+            assertEquals(responseRequestHeaders.get(key), headers.get(key));
         }
     }
 
     @RepeatedTest(5)
     public void test_PostRequest_HeadersOnly() throws URISyntaxException, IOException, InterruptedException {
         Map<String, String> headers = new HashMap<>();
-        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
-        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
-        headers.put(randomString(97, 122, (int) (Math.random() * 100) + 1), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
+        headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
 
         HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/anything", headers, null);
         JSONObject responseRequestHeaders = ParseUtils.parseJSONString(ParseUtils.parseJSONString(response.body()).get("headers").toString()); // Headers sent in the request that httpbin.org is
         // sending back in the response body
         for (String key : headers.keySet()) {
-            assertEquals(responseRequestHeaders.get(StringUtils.capitalize(key)), headers.get(key));
+            assertEquals(responseRequestHeaders.get(key), headers.get(key));
         }
     }
 
