@@ -9,9 +9,7 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
-    maven {
-        url "https://raw.github.com/schnatterer/itunes4j/mvn-repo/"
-    }
+    maven { url "https://raw.github.com/schnatterer/itunes4j/mvn-repo/" }
 }
 
 dependencies {
