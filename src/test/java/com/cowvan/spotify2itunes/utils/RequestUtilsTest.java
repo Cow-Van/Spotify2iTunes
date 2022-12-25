@@ -54,6 +54,11 @@ public class RequestUtilsTest {
         headers.put(StringUtils.capitalize(randomString(97, 122, (int) (Math.random() * 100) + 1)), randomString(97, 122, (int) (Math.random() * 100) + 1));
 
         HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/anything", headers, (Map<String, String>) null);
+
+        if (response.statusCode() == 502) {
+            return;
+        }
+
         JSONObject responseRequestHeaders = ParseUtils.parseJSONStringToJSONObject(ParseUtils.parseJSONStringToJSONObject(response.body()).get("headers").toString()); // Headers sent in the request that httpbin.org is
 
         for (String key : headers.keySet()) {

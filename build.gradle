@@ -1,11 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "edu.sc.seis.launch4j:launch4j:2.5.4"
+    }
+}
+
 plugins {
     id 'java'
     id "idea"
     id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "edu.sc.seis.launch4j" version "2.5.4"
 }
 
 group 'com.cowvan'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 repositories {
     mavenCentral()
@@ -32,4 +42,17 @@ jar {
 
 test {
     useJUnitPlatform()
+}
+
+launch4j {
+    headerType = "gui"
+    mainClassName = "com.cowvan.spotify2itunes.Spotify2iTunes"
+    outfile = "Burj2.exe"
+    icon = "${projectDir}/src/main/resources/images/icon.ico"
+    jar = '../libs/Master_Mode_System_Config-all-1.0-SNAPSHOT.jar'
+}
+
+tasks.register('createMyApp') {
+    launch4jCmd = 'launch4j-test'
+    outfile = 'MyApp.exe'
 }
