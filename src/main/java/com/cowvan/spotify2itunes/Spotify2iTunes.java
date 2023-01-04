@@ -26,9 +26,13 @@ public class Spotify2iTunes {
         Process ytdlpProcess;
 
         try {
-            ytdlpProcess = new ProcessBuilder("yt-dlp").start();
+            ytdlpProcess = new ProcessBuilder("yt-dlp")
+                    .redirectErrorStream(true)
+                    .start();
         } catch (IOException e) {
-            Process wingetProcess = new ProcessBuilder("winget", "install", "yt-dlp", "--accept-package-agreements", "--accept-source-agreements").start();
+            Process wingetProcess = new ProcessBuilder("winget", "install", "yt-dlp", "--accept-package-agreements", "--accept-source-agreements")
+                    .redirectErrorStream(true)
+                    .start();
 
             BufferedReader wingetInputStreamReader = new BufferedReader(new InputStreamReader(wingetProcess.getInputStream()));
             String wingetProcessInputStreamLine;
@@ -40,10 +44,26 @@ public class Spotify2iTunes {
             wingetProcess.waitFor();
 
             wingetInputStreamReader.close();
+
+            ytdlpProcess = new ProcessBuilder("yt-dlp")
+                    .redirectErrorStream(true)
+                    .start();
         }
 
+        BufferedReader ytdlpInputStreamReader = new BufferedReader(new InputStreamReader(ytdlpProcess.getInputStream()));
+        String ytdlpProcessInputStreamLine;
+
+        console.printf(String.valueOf(ytdlpInputStreamReader.readLine() != null));
+
+        while ((ytdlpProcessInputStreamLine = ytdlpInputStreamReader.readLine()) != null) {
+            console.printf(ytdlpProcessInputStreamLine + "\n ");
+        }
+
+        ytdlpProcess.waitFor();
+
+        ytdlpInputStreamReader.close();
+
         while (true) {
-            console.printf("ok");
         }
     }
 }
