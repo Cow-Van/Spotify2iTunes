@@ -8,25 +8,25 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 
 public class Spotify2iTunes {
+    public static final Console CONSOLE = System.console();
+
     public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {
 //        BetteriTunes iTunes = new BetteriTunes();
 //        SpotifyApi spotifyApi = new SpotifyApi(System.getenv("SPOTIFY_CLIENT_ID"), System.getenv("SPOTIFY_CLIENT_SECRET"));
 
-        Console console = System.console();
-
-        if (console == null && !GraphicsEnvironment.isHeadless()) {
+        if (CONSOLE == null && !GraphicsEnvironment.isHeadless()) {
             String filename = Spotify2iTunes.class.getProtectionDomain().getCodeSource().getLocation().toString().substring(6);
             Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", "cmd", "/k", "java -jar \"" + filename + "\""});
             System.exit(0);
             return;
-        } else if (console == null) {
+        } else if (CONSOLE == null) {
             throw new NullPointerException("Console is null");
         }
 
         Process ytdlpProcess;
 
         try {
-            ytdlpProcess = new ProcessBuilder("yt-dlp")
+            ytdlpProcess = new ProcessBuilder("yt-dlp --version")
                     .redirectErrorStream(true)
                     .start();
         } catch (IOException e) {
@@ -38,32 +38,18 @@ public class Spotify2iTunes {
             String wingetProcessInputStreamLine;
 
             while ((wingetProcessInputStreamLine = wingetInputStreamReader.readLine()) != null) {
-                console.printf(wingetProcessInputStreamLine + "\n ");
+                CONSOLE.printf(wingetProcessInputStreamLine + "\n ");
             }
 
             wingetProcess.waitFor();
 
             wingetInputStreamReader.close();
 
-            ytdlpProcess = new ProcessBuilder("yt-dlp")
+            ytdlpProcess = new ProcessBuilder("yt-dlp --version")
                     .redirectErrorStream(true)
                     .start();
         }
 
-        BufferedReader ytdlpInputStreamReader = new BufferedReader(new InputStreamReader(ytdlpProcess.getInputStream()));
-        String ytdlpProcessInputStreamLine;
 
-        console.printf(String.valueOf(ytdlpInputStreamReader.readLine() != null));
-
-        while ((ytdlpProcessInputStreamLine = ytdlpInputStreamReader.readLine()) != null) {
-            console.printf(ytdlpProcessInputStreamLine + "\n ");
-        }
-
-        ytdlpProcess.waitFor();
-
-        ytdlpInputStreamReader.close();
-
-        while (true) {
-        }
     }
 }
