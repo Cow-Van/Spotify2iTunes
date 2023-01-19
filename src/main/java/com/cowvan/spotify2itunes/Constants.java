@@ -1,9 +1,9 @@
 package com.cowvan.spotify2itunes;
 
 public final class Constants {
-    public static String wingetYtdlpPackageName = "yt-dlp";
-    public static String ytdlpCommand = "yt-dlp";
-    public static String wingetCommand = "winget";
+    public static final String wingetYtdlpPackageName = "yt-dlp";
+    public static final String ytdlpCommand = "yt-dlp";
+    public static final String wingetCommand = "winget";
 //    public static String ytdlpWorstVideoBestVideo =
 //            new StringBuilder()
 //                    .append(ytdlpCommand)
