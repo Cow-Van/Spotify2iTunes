@@ -32,4 +32,9 @@ public final class ParseUtils {
     public static String parseMapToJSONString(Map<?, ?> map) {
         return new JSONObject(map).toString();
     }
+
+    public static String parseSpotifyLinkToSpotifyId(String link) {
+        String[] linkSegements = link.split("/");
+        return linkSegements[linkSegements.length - 1].split("\\?")[0];
+    }
 }
