@@ -1,5 +1,8 @@
 package com.cowvan.spotify2itunes;
 
+import com.cowvan.spotify2itunes.itunes.BetteriTunes;
+import com.cowvan.spotify2itunes.spotify.SpotifyApi;
+
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.Console;
@@ -11,8 +14,8 @@ public class Spotify2iTunes {
     public static final Console CONSOLE = System.console();
 
     public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {
-//        BetteriTunes iTunes = new BetteriTunes();
-//        SpotifyApi spotifyApi = new SpotifyApi(System.getenv("SPOTIFY_CLIENT_ID"), System.getenv("SPOTIFY_CLIENT_SECRET"));
+        BetteriTunes iTunes = new BetteriTunes();
+        SpotifyApi spotifyApi = new SpotifyApi(System.getenv("SPOTIFY_CLIENT_ID"), System.getenv("SPOTIFY_CLIENT_SECRET"));
 
         if (CONSOLE == null && !GraphicsEnvironment.isHeadless()) {
             String filename = Spotify2iTunes.class.getProtectionDomain().getCodeSource().getLocation().toString().substring(6);
@@ -23,10 +26,8 @@ public class Spotify2iTunes {
             throw new NullPointerException("Console is null");
         }
 
-        Process ytdlpProcess;
-
         try {
-            ytdlpProcess = new ProcessBuilder("yt-dlp --version")
+            new ProcessBuilder(Constants.ytdlpTest)
                     .redirectErrorStream(true)
                     .start();
         } catch (IOException e) {
@@ -45,11 +46,11 @@ public class Spotify2iTunes {
 
             wingetInputStreamReader.close();
 
-            ytdlpProcess = new ProcessBuilder("yt-dlp --version")
+            new ProcessBuilder(Constants.ytdlpTest)
                     .redirectErrorStream(true)
                     .start();
         }
 
-
+        System.out.println(spotifyApi.getPlaylist("2efuy7K4TDtksyc4MalYHE"));
     }
 }
