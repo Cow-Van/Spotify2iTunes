@@ -8,7 +8,7 @@ public final class Constants {
     public static final String wingetYtdlpPackageName = "yt-dlp";
     public static final String ytdlpCommand = "yt-dlp";
     public static final String wingetCommand = "winget";
-    public static String ytdlpWorstAudioBestVideo =
+    public static String ytdlpWorstVideoBestVideo =
             new Command.CommandBuilder(ytdlpCommand)
                     .addOption(Option.literal("--format", "\"wv+ba\""))
                     .addFlag(Flag.literal("--extract-audio"))
