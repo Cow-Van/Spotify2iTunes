@@ -1,18 +1,18 @@
 package com.cowvan.spotify2itunes.command.argument;
 
 public class Word implements Argument {
-    // TODO
-    private Word(String flag) {
+    private final String word;
 
+    private Word(String word) {
+        this.word = word;
     }
 
     public static Word literal(String word) {
         return new Word(word);
     }
 
-    // TODO
     @Override
     public String asString() {
-        return "";
+        return word;
     }
 }

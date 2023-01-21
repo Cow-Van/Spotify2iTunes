@@ -1,18 +1,20 @@
 package com.cowvan.spotify2itunes.command.argument;
 
 public class Option implements Argument {
-    // TODO
-    private Option(String option, String value) {
+    private final String option;
+    private final String value;
 
+    private Option(String option, String value) {
+        this.option = option;
+        this.value = value;
     }
 
     public static Option literal(String option, String value) {
         return new Option(option, value);
     }
 
-    // TODO
     @Override
     public String asString() {
-        return null;
+        return option + " " + value;
     }
 }
