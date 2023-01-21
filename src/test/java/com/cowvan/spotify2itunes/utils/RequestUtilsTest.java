@@ -17,9 +17,9 @@ public class RequestUtilsTest {
     @RepeatedTest(5)
     public void test_GetRequest_ParametersOnly() throws URISyntaxException, IOException, InterruptedException {
         Map<String, String> parameters = new HashMap<>();
-        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
-        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
-        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
+        parameters.put(randomString(32, 126, (int) (Math.random() * 100) + 1), randomString(32, 126, (int) (Math.random() * 100) + 1));
+        parameters.put(randomString(32, 126, (int) (Math.random() * 100) + 1), randomString(32, 126, (int) (Math.random() * 100) + 1));
+        parameters.put(randomString(32, 126, (int) (Math.random() * 100) + 1), randomString(32, 126, (int) (Math.random() * 100) + 1));
 
         HttpResponse<String> response = RequestUtils.getRequest("https://httpbin.org/get", null, parameters);
         JSONObject data = ParseUtils.parseJSONStringToJSONObject(response.body()).getJSONObject("args");
@@ -33,9 +33,9 @@ public class RequestUtilsTest {
     @RepeatedTest(5)
     public void test_PostRequest_ParametersOnly() throws URISyntaxException, IOException, InterruptedException {
         Map<String, String> parameters = new HashMap<>();
-        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
-        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
-        parameters.put(randomString((int) (Math.random() * 100) + 1), randomString((int) (Math.random() * 100) + 1));
+        parameters.put(randomString(32, 126, (int) (Math.random() * 100) + 1), randomString(32, 126, (int) (Math.random() * 100) + 1));
+        parameters.put(randomString(32, 126, (int) (Math.random() * 100) + 1), randomString(32, 126, (int) (Math.random() * 100) + 1));
+        parameters.put(randomString(32, 126, (int) (Math.random() * 100) + 1), randomString(32, 126, (int) (Math.random() * 100) + 1));
 
         HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/post", null, parameters);
         JSONObject data = ParseUtils.parseJSONStringToJSONObject(response.body()).getJSONObject("json");
@@ -93,19 +93,6 @@ public class RequestUtilsTest {
         HttpResponse<String> response = RequestUtils.postRequest("https://httpbin.org/post", null, (Map<String, String>) null);
 
         assertEquals(response.statusCode(), 200);
-    }
-
-    private String randomString(int length) {
-        int min = 32;
-        int max = 126;
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < length; i++) {
-            stringBuilder.append((char) (Math.random() * (max - min) + min));
-        }
-
-        return stringBuilder.toString();
     }
 
     private String randomString(int minChar, int maxChar, int length) {
