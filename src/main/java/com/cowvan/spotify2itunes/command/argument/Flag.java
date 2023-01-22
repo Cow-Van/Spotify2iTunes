@@ -1,7 +1,5 @@
 package com.cowvan.spotify2itunes.command.argument;
 
-import com.cowvan.spotify2itunes.Spotify2iTunes;
-
 public class Flag implements Argument {
     private final String flag;
 

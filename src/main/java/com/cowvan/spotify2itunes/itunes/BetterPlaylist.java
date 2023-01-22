@@ -6,7 +6,7 @@ import info.schnatterer.itunes4j.entity.Playlist;
 public class BetterPlaylist extends Playlist {
     private final IITUserPlaylist wrappedPlaylist;
 
-    public BetterPlaylist(IITUserPlaylist wrappedPlaylist) throws NoSuchFieldException, IllegalAccessException {
+    public BetterPlaylist(IITUserPlaylist wrappedPlaylist) {
         super(wrappedPlaylist);
 
         this.wrappedPlaylist = wrappedPlaylist;

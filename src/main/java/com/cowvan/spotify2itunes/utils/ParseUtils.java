@@ -2,7 +2,6 @@ package com.cowvan.spotify2itunes.utils;
 
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -14,7 +13,7 @@ public final class ParseUtils {
         return new JSONObject(JSONString);
     }
 
-    public static String parseMapToASCIIString(Map<String, String> parameters) throws UnsupportedEncodingException {
+    public static String parseMapToASCIIString(Map<String, String> parameters) {
         StringBuilder parameterStringBuilder = new StringBuilder();
 
         for (String key : parameters.keySet()) {

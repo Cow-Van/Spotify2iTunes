@@ -1,7 +1,6 @@
 package com.cowvan.spotify2itunes.youtube;
 
 import com.cowvan.spotify2itunes.Constants;
-import com.cowvan.spotify2itunes.Spotify2iTunes;
 
 import java.io.BufferedReader;
 import java.io.Console;

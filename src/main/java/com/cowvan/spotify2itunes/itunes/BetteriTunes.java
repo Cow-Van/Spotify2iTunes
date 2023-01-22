@@ -16,11 +16,7 @@ public class BetteriTunes extends ITunes {
         IITPlaylist playlist = iTunes.createPlaylist(playlistName);
 
         if (ITPlaylistKind.ITPlaylistKindUser.equals(playlist.kind())) {
-            try {
-                return new BetterPlaylist(playlist.queryInterface(IITUserPlaylist.class));
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+            return new BetterPlaylist(playlist.queryInterface(IITUserPlaylist.class));
         } else {
             throw new ITunesException(
                     "Created playlist was of unexpected type \""

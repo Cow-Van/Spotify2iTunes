@@ -1,16 +1,12 @@
 package com.cowvan.spotify2itunes.command;
 
-import com.cowvan.spotify2itunes.Spotify2iTunes;
 import com.cowvan.spotify2itunes.command.argument.Argument;
 import com.cowvan.spotify2itunes.command.argument.Flag;
 import com.cowvan.spotify2itunes.command.argument.Option;
 import com.cowvan.spotify2itunes.command.argument.Word;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ListIterator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Command {
     private final String commandName;
