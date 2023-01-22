@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+}
+
+group 'com.cowvan'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://raw.github.com/schnatterer/itunes4j/mvn-repo/" }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation "info.schnatterer:itunes4j:1.0"
+    implementation "org.json:json:20220924"
+}
+
+jar {
+    from configurations.getByName("runtimeClasspath").collect { it.isDirectory() ? it : zipTree(it) }
+
+    manifest {
+        attributes(
+                "Main-Class": "com.cowvan.spotify2itunes.Spotify2iTunes",
+        )
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register("runBatScript") {
+    group("build")
+    doLast {
+        new File(buildDir.toPath().toString() + "/" + libsDirName, "run.bat").text = """
+        @echo off
+        >nul 2>&1 "%SYSTEMROOT%\\system32\\cacls.exe" "%SYSTEMROOT%\\system32\\config\\system"
+        if '%errorlevel%' NEQ '0' (
+        echo Requesting administrative privileges...
+        goto UACPrompt
+        ) else ( goto gotAdmin )
+        :UACPrompt
+        echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\\getadmin.vbs"
+        echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\\getadmin.vbs"
+        "%temp%\\getadmin.vbs"
+        exit /B
+        :gotAdmin
+        if exist "%temp%\\getadmin.vbs" ( del "%temp%\\getadmin.vbs" )
+        pushd "%CD%"
+        CD /D "%~dp0"
+        java -jar ./${archivesBaseName}-${version}.jar
+        """
+    }
+}
+
+tasks.named("build") {
+    finalizedBy("runBatScript")
+}
