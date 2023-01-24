@@ -1,10 +1,12 @@
 package com.cowvan.spotify2itunes.utils;
 
+import com.cowvan.spotify2itunes.Constants;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 public final class ParseUtils {
     private ParseUtils() {}
@@ -31,8 +33,17 @@ public final class ParseUtils {
         return new JSONObject(map).toString();
     }
 
-    public static String parseSpotifyLinkToSpotifyId(String link) {
-        String[] linkSegments = link.split("/");
-        return linkSegments[linkSegments.length - 1].split("\\?")[0];
+    public static String parseSpotifyLinkToId(String link) {
+        if (link == null) {
+            return "";
+        }
+
+        Matcher matcher = Constants.spotifyLinkPattern.matcher(link);
+
+        if (!matcher.find()) {
+            return "";
+        }
+
+        return matcher.group(Constants.spotifyLinkPatternIdGroup);
     }
 }

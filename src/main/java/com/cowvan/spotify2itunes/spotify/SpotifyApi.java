@@ -15,7 +15,7 @@ public class SpotifyApi {
     private final String clientId;
     private final String clientSecret;
     private String accessToken;
-    private long accessTokenExpireTime;
+    private double accessTokenExpireTime;
 
     public SpotifyApi(String clientId, String clientSecret) throws URISyntaxException, IOException, InterruptedException {
         this.clientId = clientId;
@@ -75,11 +75,11 @@ public class SpotifyApi {
         JSONObject body = ParseUtils.parseJSONStringToJSONObject(response.body());
 
         accessToken = body.getString("access_token");
-        accessTokenExpireTime = new Date().getTime() / 1000 + body.getInt("expires_in");
+        accessTokenExpireTime = new Date().getTime() / 1000d + body.getInt("expires_in");
     }
 
     private void checkAccessToken() throws URISyntaxException, IOException, InterruptedException {
-        if (new Date().getTime() / 1000 > accessTokenExpireTime) {
+        if (new Date().getTime() / 1000d > accessTokenExpireTime) {
             updateAccessToken();
         }
     }
