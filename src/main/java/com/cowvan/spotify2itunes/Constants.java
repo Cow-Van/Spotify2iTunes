@@ -17,7 +17,7 @@ public final class Constants {
     public static final Command ytdlpSearchCommand =
             new Command.CommandBuilder(ytdlpCommand)
                     .addFlag(Flag.literal("--get-id"))
-                    .addOption(Option.literal("--default-search", "ytsearch"))
+                    .addOption(Option.literal("--default-search", "\"ytsearch\""))
                     .build();
     public static final Command ytdlpWorstVideoBestVideoCommand =
             new Command.CommandBuilder(ytdlpCommand)
@@ -28,7 +28,7 @@ public final class Constants {
                     .addFlag(Flag.literal("--dump-single-json"))
                     .addFlag(Flag.literal("--no-simulate"))
                     .addOption(Option.literal("--progress-template", """
-                            {"progressPercentage": "%(progress._percent_str)s", "progressTotal": "%(progress._total_bytes_str)s", "speed":"%(progress._speed_str)s", "ETA": "%(progress._eta_str)s"}
+                            {"progressPercentage": "%%(progress._percent_str)s", "progressTotal": "%%(progress._total_bytes_str)s", "speed":"%%(progress._speed_str)s", "ETA": "%%(progress._eta_str)s"}
                             """))
                     .build();
 

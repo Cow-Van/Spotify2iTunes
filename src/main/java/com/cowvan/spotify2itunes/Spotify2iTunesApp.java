@@ -40,7 +40,7 @@ public class Spotify2iTunesApp {
             boolean songDownloaded = false;
 
             while (!songDownloaded) {
-                String songId = youTubeApi.searchSong(song.title() + " - " + String.join(",", song.artists()));
+                String songId = youTubeApi.searchSong(song.title() + " - " + String.join(", ", song.artists()));
                 songDownloaded = youTubeApi.downloadSong(songId);
             }
         }

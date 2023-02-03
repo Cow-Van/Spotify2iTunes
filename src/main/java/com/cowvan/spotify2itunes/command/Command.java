@@ -6,6 +6,7 @@ import com.cowvan.spotify2itunes.command.argument.Option;
 import com.cowvan.spotify2itunes.command.argument.Word;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ListIterator;
 
 public class Command {
@@ -49,6 +50,11 @@ public class Command {
             }
 
             this.commandName = commandName;
+        }
+
+        public CommandBuilder(Command command) {
+            this.commandName = command.commandName;
+            this.arguments.addAll(Arrays.stream(command.arguments).toList());
         }
 
         public CommandBuilder addWord(Word word) {
