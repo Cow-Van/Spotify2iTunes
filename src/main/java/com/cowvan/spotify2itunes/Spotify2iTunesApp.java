@@ -37,12 +37,17 @@ public class Spotify2iTunesApp {
         Song[] songs = spotifyApi.getPlaylistSongs(id);
 
         for (Song song : songs) {
+            console.printf("Downloading [%s - %s]...\n ", song.title(), String.join(", ", song.artists()));
+
             boolean songDownloaded = false;
 
             while (!songDownloaded) {
                 String songId = youTubeApi.searchSong(song.title() + " - " + String.join(", ", song.artists()));
                 songDownloaded = youTubeApi.downloadSong(songId);
+                console.printf(String.valueOf(songDownloaded));
             }
+
+            console.printf("[%s - %s] has been downloaded\n ", song.title(), String.join(", ", song.artists()));
         }
     }
 

@@ -8,7 +8,7 @@ import java.io.Console;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class Spotify2iTunes {
+public class Spotify2iTunes { // TODO lyrics syncing?
     public static final Console CONSOLE = System.console();
 
     public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {

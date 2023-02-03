@@ -19,4 +19,9 @@ public class Word implements Argument {
     public String asString() {
         return word;
     }
+
+    @Override
+    public String[] asArray() {
+        return new String[]{word};
+    }
 }

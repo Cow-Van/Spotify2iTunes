@@ -7,6 +7,7 @@ import com.cowvan.spotify2itunes.command.argument.Word;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ListIterator;
 
 public class Command {
@@ -30,14 +31,14 @@ public class Command {
     }
 
     public String[] asArray() {
-        String[] command = new String[arguments.length + 1];
-        command[0] = commandName;
+        ArrayList<String> command = new ArrayList<>();
+        command.add(commandName);
 
-        for (int i = 1; i <= arguments.length; i++) {
-            command[i] = arguments[i - 1].asString();
+        for (Argument argument : arguments) {
+            command.addAll(List.of(argument.asArray()));
         }
 
-        return command;
+        return command.toArray(new String[0]);
     }
 
     public static class CommandBuilder {

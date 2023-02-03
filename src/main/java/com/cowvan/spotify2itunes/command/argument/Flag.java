@@ -19,4 +19,9 @@ public class Flag implements Argument {
     public String asString() {
         return flag;
     }
+
+    @Override
+    public String[] asArray() {
+        return new String[]{flag};
+    }
 }

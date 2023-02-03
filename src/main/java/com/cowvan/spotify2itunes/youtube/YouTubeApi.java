@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class YouTubeApi {
     private final Console console;
@@ -22,9 +21,6 @@ public class YouTubeApi {
                 .addWord(Word.literal("\"%s\"".formatted(songId)))
                 .build();
 
-        console.printf(Arrays.toString(Constants.ytdlpWorstVideoBestVideoCommand.asArray()));
-        console.printf(command.asString());
-
         Process ytdlpProcess = new ProcessBuilder(command.asArray())
                 .redirectErrorStream(true)
                 .start();
@@ -32,7 +28,7 @@ public class YouTubeApi {
         String ytdlpProcessInputStreamLine;
 
         while ((ytdlpProcessInputStreamLine = ytdlpInputStreamReader.readLine()) != null) {
-            console.printf(ytdlpProcessInputStreamLine + "\n ");
+
         }
 
         ytdlpProcess.waitFor();
@@ -43,12 +39,10 @@ public class YouTubeApi {
     }
 
     public String searchSong(String song) throws IOException, InterruptedException {
+        String songId = "";
         Command command = new Command.CommandBuilder(Constants.ytdlpSearchCommand)
                 .addWord(Word.literal("\"%s\"".formatted(song)))
                 .build();
-
-        console.printf(Arrays.toString(Constants.ytdlpSearchCommand.asArray()));
-        console.printf(command.asString());
 
         Process ytdlpProcess = new ProcessBuilder(command.asArray())
                 .redirectErrorStream(true)
@@ -56,6 +50,10 @@ public class YouTubeApi {
         BufferedReader ytdlpInputStreamReader = new BufferedReader(new InputStreamReader(ytdlpProcess.getInputStream()));
 
         String ytdlpProcessInputStreamLine;
+
+        if ((ytdlpProcessInputStreamLine = ytdlpInputStreamReader.readLine()) != null) {
+            songId = ytdlpProcessInputStreamLine;
+        }
 
         while ((ytdlpProcessInputStreamLine = ytdlpInputStreamReader.readLine()) != null) {
             console.printf(ytdlpProcessInputStreamLine + "\n ");
@@ -65,6 +63,6 @@ public class YouTubeApi {
 
         ytdlpInputStreamReader.close();
 
-        return "";
+        return songId;
     }
 }

@@ -21,4 +21,9 @@ public class Option implements Argument {
     public String asString() {
         return option + " " + value;
     }
+
+    @Override
+    public String[] asArray() {
+        return new String[]{option, value};
+    }
 }
