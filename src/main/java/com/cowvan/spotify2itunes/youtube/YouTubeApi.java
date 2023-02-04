@@ -2,12 +2,10 @@ package com.cowvan.spotify2itunes.youtube;
 
 import com.cowvan.spotify2itunes.Constants;
 import com.cowvan.spotify2itunes.command.Command;
+import com.cowvan.spotify2itunes.command.argument.Option;
 import com.cowvan.spotify2itunes.command.argument.Word;
 
-import java.io.BufferedReader;
-import java.io.Console;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class YouTubeApi {
     private final Console console;
@@ -17,7 +15,12 @@ public class YouTubeApi {
     }
 
     public boolean downloadSong(String songId) throws IOException, InterruptedException {
+        return downloadSong(songId, new File(""));
+    }
+
+    public boolean downloadSong(String songId, File downloadDir) throws IOException, InterruptedException {
         Command command = new Command.CommandBuilder(Constants.ytdlpWorstVideoBestVideoCommand)
+                .addOption(Option.literal("--paths", downloadDir.getAbsolutePath()))
                 .addWord(Word.literal("\"%s\"".formatted(songId)))
                 .build();
 

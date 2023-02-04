@@ -7,11 +7,10 @@ import com.cowvan.spotify2itunes.utils.ParseUtils;
 import com.cowvan.spotify2itunes.youtube.YouTubeApi;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.Console;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class Spotify2iTunesApp {
@@ -19,6 +18,8 @@ public class Spotify2iTunesApp {
     private final SpotifyApi spotifyApi;
     private final YouTubeApi youTubeApi;
     private final BetteriTunes iTunes;
+
+    private File downloadDir = new File(System.getProperty("user.dir"));
 
     public Spotify2iTunesApp(Console console, SpotifyApi spotifyApi, YouTubeApi youTubeApi, BetteriTunes iTunes) {
         this.console = console;
@@ -31,10 +32,36 @@ public class Spotify2iTunesApp {
         checkConsoleExists();
         checkYtdlpExists();
 
+        String directory = null;
+
+        while (directory == null) {
+            console.printf("Enter a directory path for downloaded files or leave blank to use current working directory: ");
+            directory = console.readLine();
+
+            if (directory.equals("")) {
+                break;
+            }
+
+            if (!isValidPath(directory)) {
+                directory = null;
+                console.printf("Invalid file path\n ");
+            } else {
+                downloadDir = new File(directory);
+            }
+        }
+
         String link = getSpotifyLinkInput();
         String id = ParseUtils.parseSpotifyLinkToId(link);
 
-        Song[] songs = spotifyApi.getPlaylistSongs(id);
+        downloadSongsFromSpotifyPlaylist(id, downloadDir);
+    }
+
+    public void downloadSongsFromSpotifyPlaylist(String playlistId) throws IOException, InterruptedException, URISyntaxException {
+        downloadSongsFromSpotifyPlaylist(playlistId, new File(""));
+    }
+
+    public void downloadSongsFromSpotifyPlaylist(String playlistId, File downloadDir) throws IOException, InterruptedException, URISyntaxException {
+        Song[] songs = spotifyApi.getPlaylistSongs(playlistId);
 
         for (Song song : songs) {
             console.printf("Downloading [%s - %s]...\n ", song.title(), String.join(", ", song.artists()));
@@ -43,8 +70,7 @@ public class Spotify2iTunesApp {
 
             while (!songDownloaded) {
                 String songId = youTubeApi.searchSong(song.title() + " - " + String.join(", ", song.artists()));
-                songDownloaded = youTubeApi.downloadSong(songId);
-                console.printf(String.valueOf(songDownloaded));
+                songDownloaded = youTubeApi.downloadSong(songId, downloadDir);
             }
 
             console.printf("[%s - %s] has been downloaded\n ", song.title(), String.join(", ", song.artists()));
@@ -56,7 +82,7 @@ public class Spotify2iTunesApp {
 
         while (Objects.equals(ParseUtils.parseSpotifyLinkToId(link), "")) {
             if (link != null) {
-                console.printf("Invalid link\n");
+                console.printf("Invalid link\n ");
             }
 
             console.printf("Enter a valid Spotify link to a song or public playlist: ");
@@ -82,7 +108,7 @@ public class Spotify2iTunesApp {
                     .redirectErrorStream(true)
                     .start();
         } catch (IOException e) {
-            console.printf(e.getMessage() + "\n");
+            console.printf(e.getMessage() + "\n ");
 
             installYtdlp();
         }
@@ -107,5 +133,14 @@ public class Spotify2iTunesApp {
         new ProcessBuilder(Constants.ytdlpTestCommand.asArray())
                 .redirectErrorStream(true)
                 .start();
+    }
+
+    private boolean isValidPath(String path) {
+        try {
+            Paths.get(path);
+        } catch (InvalidPathException | NullPointerException e) {
+            return false;
+        }
+        return true;
     }
 }
