@@ -19,11 +19,12 @@ public final class Constants {
                     .addFlag(Flag.literal("--get-id"))
                     .addOption(Option.literal("--default-search", "\"ytsearch\""))
                     .build();
+    public static final String ytdlpWorstVideoBestVideoFileFormat = "wav";
     public static final Command ytdlpWorstVideoBestVideoCommand =
             new Command.CommandBuilder(ytdlpCommand)
                     .addOption(Option.literal("--format", "\"wv+ba\""))
                     .addFlag(Flag.literal("--extract-audio"))
-                    .addOption(Option.literal("--audio-format", "\"wav\""))
+                    .addOption(Option.literal("--audio-format", "\"%s\"".formatted(ytdlpWorstVideoBestVideoFileFormat)))
                     .addOption(Option.literal("--audio-quality", "\"0\""))
                     .addFlag(Flag.literal("--dump-single-json"))
                     .addFlag(Flag.literal("--no-simulate"))

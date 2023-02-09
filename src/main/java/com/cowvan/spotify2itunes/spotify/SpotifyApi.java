@@ -24,7 +24,7 @@ public class SpotifyApi {
         updateAccessToken();
     }
 
-    public JSONObject getPlaylist(String playlistId) throws URISyntaxException, IOException, InterruptedException {
+    public JSONObject getPlaylistData(String playlistId) throws URISyntaxException, IOException, InterruptedException {
         checkAccessToken();
 
         Map<String, String> headers = new HashMap<>();
@@ -32,15 +32,16 @@ public class SpotifyApi {
         headers.put("Authorization", "Bearer " + accessToken);
 
         HttpResponse<String> response = RequestUtils.getRequest("https://api.spotify.com/v1/playlists/" + playlistId, headers, (String) null);
-        JSONObject body = ParseUtils.parseJSONStringToJSONObject(response.body());
 
-        return body.getJSONObject("tracks");
+        return ParseUtils.parseJSONStringToJSONObject(response.body());
     }
 
-    public Song[] getPlaylistSongs(String playlistId) throws URISyntaxException, IOException, InterruptedException {
+    public Playlist getPlaylist(String playlistId) throws URISyntaxException, IOException, InterruptedException {
         ArrayList<Song> songs = new ArrayList<>();
 
-        JSONArray tracks = this.getPlaylist(playlistId).getJSONArray("items");
+        JSONObject playlistData = getPlaylistData(playlistId);
+        String name = playlistData.getString("name");
+        JSONArray tracks = playlistData.getJSONObject("tracks").getJSONArray("items");
 
         for (Object object : tracks) {
             JSONObject track = (JSONObject) object;
@@ -61,7 +62,7 @@ public class SpotifyApi {
             songs.add(new Song(trackName, trackArtists.toArray(new String[0]), trackImage));
         }
 
-        return songs.toArray(new Song[0]);
+        return new Playlist(name, songs.toArray(new Song[0]));
     }
 
     private void updateAccessToken() throws URISyntaxException, IOException, InterruptedException {

@@ -7,30 +7,36 @@ import com.cowvan.spotify2itunes.command.argument.Word;
 
 import java.io.*;
 
-public class YouTubeApi {
+public class YouTubeApi { // TODO: multithreading search & download
     private final Console console;
 
     public YouTubeApi(Console console) {
         this.console = console;
     }
 
-    public boolean downloadSong(String songId) throws IOException, InterruptedException {
-        return downloadSong(songId, new File(""));
+    public File downloadSong(String songId) throws IOException, InterruptedException {
+        return downloadSong(songId, new File(""), null);
     }
 
-    public boolean downloadSong(String songId, File downloadDir) throws IOException, InterruptedException {
-        Command command = new Command.CommandBuilder(Constants.ytdlpWorstVideoBestVideoCommand)
-                .addOption(Option.literal("--paths", downloadDir.getAbsolutePath()))
-                .addWord(Word.literal("\"%s\"".formatted(songId)))
-                .build();
+    public File downloadSong(String songId, File downloadDir) throws IOException, InterruptedException {
+        return downloadSong(songId, downloadDir, null);
+    }
 
-        Process ytdlpProcess = new ProcessBuilder(command.asArray())
+    public File downloadSong(String songId, File downloadDir, String songName) throws IOException, InterruptedException {
+        Command.CommandBuilder commandBuilder = new Command.CommandBuilder(Constants.ytdlpWorstVideoBestVideoCommand)
+                .addOption(Option.literal("--paths", downloadDir.getAbsolutePath()))
+                .addWord(Word.literal("\"%s\"".formatted(songId)));
+
+        if (songName != null) {
+            commandBuilder.addOption(Option.literal("--output", "\"%s.%%(ext)s\"".formatted(songName)));
+        }
+
+        Process ytdlpProcess = new ProcessBuilder(commandBuilder.build().asArray())
                 .redirectErrorStream(true)
                 .start();
         BufferedReader ytdlpInputStreamReader = new BufferedReader(new InputStreamReader(ytdlpProcess.getInputStream()));
-        String ytdlpProcessInputStreamLine;
 
-        while ((ytdlpProcessInputStreamLine = ytdlpInputStreamReader.readLine()) != null) {
+        while (ytdlpInputStreamReader.readLine() != null) {
 
         }
 
@@ -38,7 +44,7 @@ public class YouTubeApi {
 
         ytdlpInputStreamReader.close();
 
-        return ytdlpProcess.exitValue() == 0;
+        return (ytdlpProcess.exitValue() == 0) ? new File(downloadDir, songName + Constants.ytdlpWorstVideoBestVideoFileFormat) : null;
     }
 
     public String searchSong(String song) throws IOException, InterruptedException {
@@ -59,7 +65,7 @@ public class YouTubeApi {
         }
 
         while ((ytdlpProcessInputStreamLine = ytdlpInputStreamReader.readLine()) != null) {
-            console.printf(ytdlpProcessInputStreamLine + "\n ");
+            console.printf(ytdlpProcessInputStreamLine + "\n");
         }
 
         ytdlpProcess.waitFor();

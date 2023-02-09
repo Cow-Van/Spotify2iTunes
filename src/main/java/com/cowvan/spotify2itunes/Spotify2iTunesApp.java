@@ -1,10 +1,13 @@
 package com.cowvan.spotify2itunes;
 
+import com.cowvan.spotify2itunes.itunes.BetterPlaylist;
 import com.cowvan.spotify2itunes.itunes.BetteriTunes;
+import com.cowvan.spotify2itunes.spotify.Playlist;
 import com.cowvan.spotify2itunes.spotify.Song;
 import com.cowvan.spotify2itunes.spotify.SpotifyApi;
 import com.cowvan.spotify2itunes.utils.ParseUtils;
 import com.cowvan.spotify2itunes.youtube.YouTubeApi;
+import info.schnatterer.itunes4j.ITunesException;
 
 import java.awt.*;
 import java.io.*;
@@ -28,7 +31,7 @@ public class Spotify2iTunesApp {
         this.iTunes = iTunes;
     }
 
-    public void run() throws IOException, InterruptedException, URISyntaxException {
+    public void run() throws IOException, InterruptedException, URISyntaxException, ITunesException {
         checkConsoleExists();
         checkYtdlpExists();
 
@@ -44,7 +47,7 @@ public class Spotify2iTunesApp {
 
             if (!isValidPath(directory)) {
                 directory = null;
-                console.printf("Invalid file path\n ");
+                console.printf("Invalid file path\n");
             } else {
                 downloadDir = new File(directory);
             }
@@ -53,28 +56,48 @@ public class Spotify2iTunesApp {
         String link = getSpotifyLinkInput();
         String id = ParseUtils.parseSpotifyLinkToId(link);
 
-        downloadSongsFromSpotifyPlaylist(id, downloadDir);
+        File playlistFileLocation = downloadSongsFromSpotifyPlaylist(id, downloadDir);
+
+        console.printf("\nCreating [%s] iTunes playlist...\n", playlistFileLocation.getName());
+
+        BetterPlaylist playlist = iTunes.createPlaylist(playlistFileLocation.getName());
+
+        console.printf("Created [%s] iTunes playlist\n\n", playlistFileLocation.getName());
+
+        console.printf("\nAdding songs to [%s] iTunes playlist...\n\n", playlistFileLocation.getName());
+
+        playlist.addFile(playlistFileLocation.getAbsolutePath());
+
+        console.printf("All songs added to [%s] iTunes playlist...\n\n", playlistFileLocation.getName());
     }
 
-    public void downloadSongsFromSpotifyPlaylist(String playlistId) throws IOException, InterruptedException, URISyntaxException {
-        downloadSongsFromSpotifyPlaylist(playlistId, new File(""));
+    public File downloadSongsFromSpotifyPlaylist(String playlistId) throws IOException, InterruptedException, URISyntaxException {
+        return downloadSongsFromSpotifyPlaylist(playlistId, new File(""));
     }
 
-    public void downloadSongsFromSpotifyPlaylist(String playlistId, File downloadDir) throws IOException, InterruptedException, URISyntaxException {
-        Song[] songs = spotifyApi.getPlaylistSongs(playlistId);
+    public File downloadSongsFromSpotifyPlaylist(String playlistId, File downloadDir) throws IOException, InterruptedException, URISyntaxException {
+        Playlist playlist = spotifyApi.getPlaylist(playlistId);
+        File playlistDir = new File(downloadDir, playlist.name());
 
-        for (Song song : songs) {
-            console.printf("Downloading [%s - %s]...\n ", song.title(), String.join(", ", song.artists()));
+        console.printf("\nDownloading playlist [%s] at [%s]...\n\n", playlist.name(), playlistDir.getAbsolutePath());
 
-            boolean songDownloaded = false;
+        for (Song song : playlist.songs()) {
+            console.printf("Downloading [%s - %s]...\n", song.title(), String.join(", ", song.artists()));
 
-            while (!songDownloaded) {
-                String songId = youTubeApi.searchSong(song.title() + " - " + String.join(", ", song.artists()));
-                songDownloaded = youTubeApi.downloadSong(songId, downloadDir);
+            File songLocation = null;
+
+            while (songLocation == null) {
+                String songName = song.title() + " - " + String.join(", ", song.artists());
+                String songId = youTubeApi.searchSong(songName);
+                songLocation = youTubeApi.downloadSong(songId, playlistDir, songName);
             }
 
-            console.printf("[%s - %s] has been downloaded\n ", song.title(), String.join(", ", song.artists()));
+            console.printf("[%s - %s] has been downloaded\n\n", song.title(), String.join(", ", song.artists()));
         }
+
+        console.printf("\n[%s] has been downloaded at [%s]\n\n", playlist.name(), playlistDir.getAbsolutePath());
+
+        return playlistDir;
     }
 
     private String getSpotifyLinkInput() {
@@ -82,10 +105,10 @@ public class Spotify2iTunesApp {
 
         while (Objects.equals(ParseUtils.parseSpotifyLinkToId(link), "")) {
             if (link != null) {
-                console.printf("Invalid link\n ");
+                console.printf("Invalid link\n");
             }
 
-            console.printf("Enter a valid Spotify link to a song or public playlist: ");
+            console.printf("Enter a valid Spotify link to a public playlist: ");
             link = console.readLine();
         }
 
@@ -108,7 +131,7 @@ public class Spotify2iTunesApp {
                     .redirectErrorStream(true)
                     .start();
         } catch (IOException e) {
-            console.printf(e.getMessage() + "\n ");
+            console.printf(e.getMessage() + "\n");
 
             installYtdlp();
         }
@@ -123,7 +146,7 @@ public class Spotify2iTunesApp {
         String wingetProcessInputStreamLine;
 
         while ((wingetProcessInputStreamLine = wingetInputStreamReader.readLine()) != null) {
-            console.printf(wingetProcessInputStreamLine + "\n ");
+            console.printf(wingetProcessInputStreamLine + "\n");
         }
 
         wingetProcess.waitFor();
