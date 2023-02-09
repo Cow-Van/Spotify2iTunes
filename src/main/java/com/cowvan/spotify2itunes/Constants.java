@@ -19,7 +19,7 @@ public final class Constants {
                     .addFlag(Flag.literal("--get-id"))
                     .addOption(Option.literal("--default-search", "\"ytsearch\""))
                     .build();
-    public static final String ytdlpWorstVideoBestVideoFileFormat = "wav";
+    public static final String ytdlpWorstVideoBestVideoFileFormat = "mp3";
     public static final Command ytdlpWorstVideoBestVideoCommand =
             new Command.CommandBuilder(ytdlpCommand)
                     .addOption(Option.literal("--format", "\"wv+ba\""))

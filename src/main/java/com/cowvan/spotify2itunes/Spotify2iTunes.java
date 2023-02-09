@@ -1,5 +1,6 @@
 package com.cowvan.spotify2itunes;
 
+import com.cowvan.spotify2itunes.app.Spotify2iTunesApp;
 import com.cowvan.spotify2itunes.itunes.BetteriTunes;
 import com.cowvan.spotify2itunes.spotify.SpotifyApi;
 import com.cowvan.spotify2itunes.youtube.YouTubeApi;

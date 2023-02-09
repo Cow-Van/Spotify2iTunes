@@ -16,7 +16,7 @@ public class Command {
 
     private Command(CommandBuilder builder) {
         commandName = builder.commandName;
-        arguments = builder.arguments.toArray(new Argument[0]);
+        arguments = builder.arguments.toArray(Argument[]::new);
     }
 
     public String asString() {
@@ -38,7 +38,7 @@ public class Command {
             command.addAll(List.of(argument.asArray()));
         }
 
-        return command.toArray(new String[0]);
+        return command.toArray(String[]::new);
     }
 
     public static class CommandBuilder {

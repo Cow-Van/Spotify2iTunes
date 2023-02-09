@@ -44,7 +44,7 @@ public class YouTubeApi { // TODO: multithreading search & download
 
         ytdlpInputStreamReader.close();
 
-        return (ytdlpProcess.exitValue() == 0) ? new File(downloadDir, songName + Constants.ytdlpWorstVideoBestVideoFileFormat) : null;
+        return (ytdlpProcess.exitValue() == 0) ? new File(downloadDir, songName + "." + Constants.ytdlpWorstVideoBestVideoFileFormat) : null;
     }
 
     public String searchSong(String song) throws IOException, InterruptedException {
@@ -64,8 +64,8 @@ public class YouTubeApi { // TODO: multithreading search & download
             songId = ytdlpProcessInputStreamLine;
         }
 
-        while ((ytdlpProcessInputStreamLine = ytdlpInputStreamReader.readLine()) != null) {
-            console.printf(ytdlpProcessInputStreamLine + "\n");
+        while (ytdlpInputStreamReader.readLine() != null) {
+
         }
 
         ytdlpProcess.waitFor();
