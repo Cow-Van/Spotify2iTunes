@@ -44,4 +44,6 @@ public final class Constants {
 
     public static final Pattern spotifyLinkPattern = Pattern.compile("^https://open.spotify.com/(playlist|track|album)/([a-zA-Z0-9]+)(.*)$", Pattern.CASE_INSENSITIVE);
     public static final int spotifyLinkPatternIdGroup = 2;
+    public static final String illegalFilenameCharactersPattern = "[\\*/\\\\!\\|:?<>\"']";
+    public static final String spotifyImageFileFormat = "jpg";
 }

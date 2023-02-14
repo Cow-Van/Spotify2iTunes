@@ -2,6 +2,7 @@ package com.cowvan.spotify2itunes.spotify;
 
 import com.cowvan.spotify2itunes.utils.ParseUtils;
 import com.cowvan.spotify2itunes.utils.RequestUtils;
+import com.cowvan.spotify2itunes.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,10 +42,11 @@ public class SpotifyApi {
             String[] albumArtists = getArtistsName(trackInfo.getJSONObject("album").getJSONArray("artists"));
             String trackImageUrl = trackInfo.getJSONObject("album").getJSONArray("images").getJSONObject(0).getString("url");
 
-            songsData.add(new SongData(trackName, trackArtists, albumName, albumArtists, trackImageUrl));
+            songsData.add(new SongData(trackName, StringUtils.removeIllegalFilenameCharacters(trackName), trackArtists, StringUtils.removeIllegalFilenameCharactersFromStrings(trackArtists),
+                    albumName, StringUtils.removeIllegalFilenameCharacters(albumName), albumArtists, StringUtils.removeIllegalFilenameCharactersFromStrings(albumArtists), trackImageUrl));
         }
 
-        return new PlaylistData(name, songsData.toArray(new SongData[0]));
+        return new PlaylistData(name, StringUtils.removeIllegalFilenameCharacters(name), songsData.toArray(new SongData[0]));
     }
 
     private String[] getArtistsName(JSONArray artists) {

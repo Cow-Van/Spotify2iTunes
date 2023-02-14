@@ -101,7 +101,6 @@ public class Spotify2iTunesApp {
 
     private void addSongsMetadata(Playlist playlist) throws CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, IOException, CannotWriteException {
         for (int i = 0; i < playlist.fileLocation().songs().length; i++) {
-            console.printf(playlist.fileLocation().songs()[i].getAbsolutePath());
             AudioFile song = AudioFileIO.read(playlist.fileLocation().songs()[i]);
             Tag songTag = song.getTag();
 
@@ -111,17 +110,18 @@ public class Spotify2iTunesApp {
             songTag.setField(FieldKey.ALBUM_ARTIST, String.join(", ", playlist.playlistData().songs()[i].albumArtists()));
 //            songTag.setField(FieldKey.LYRICS); TODO
 
-            URL imageUrl = new URL(playlist.playlistData().songs()[i].imageUrl()); // TODO fix
-            Path downloadLocation = Path.of(downloadDir.getPath(), "temp", playlist.playlistData().songs()[i].title().replace("/", "_").replace("\\", "_") + "-" + (int) (Math.random() * 1000) + ".jpg");
+            URL imageUrl = new URL(playlist.playlistData().songs()[i].imageUrl());
+            Path downloadLocation = Path.of(playlist.fileLocation().playlist().getPath(),
+                    imageUrl.toString().split("/")[imageUrl.toString().split("/").length - 1] + "." + Constants.spotifyImageFileFormat);
 
             downloadImage(imageUrl, downloadLocation);
             songTag.setField(Artwork.createArtworkFromFile(downloadLocation.toFile()));
 
             song.setTag(songTag);
             AudioFileIO.write(song);
-        }
 
-        new File(downloadDir, "temp").deleteOnExit();
+            downloadLocation.toFile().delete();
+        }
     }
 
     private void downloadImage(URL url, Path destinationFilePath) throws IOException {
@@ -136,7 +136,7 @@ public class Spotify2iTunesApp {
 
     public Playlist downloadSongsFromSpotifyPlaylist(String playlistId, File downloadDir) throws IOException, InterruptedException, URISyntaxException {
         PlaylistData playlistData = spotifyApi.getPlaylistData(playlistId);
-        File playlistDir = Paths.get(downloadDir.toPath().toString(), playlistData.name()).toFile();
+        File playlistDir = Paths.get(downloadDir.toPath().toString(), playlistData.validFilenameName()).toFile();
         ArrayList<File> songFiles = new ArrayList<>();
 
         console.printf("\nDownloading playlist [%s] at [%s]...\n\n", playlistData.name(), playlistDir.getAbsolutePath());
@@ -148,8 +148,10 @@ public class Spotify2iTunesApp {
 
             while (songLocation == null) {
                 String songName = songData.title() + " - " + String.join(", ", songData.artists());
+                String validFileSongName = songData.validFilenameTitle() + " - " + String.join(", ", songData.validFilenameArtists());
                 String songId = youTubeApi.searchSong(songName);
-                songLocation = youTubeApi.downloadSong(songId, playlistDir, songName.replace("\\", "_").replace("/", "_"));
+
+                songLocation = youTubeApi.downloadSong(songId, playlistDir, validFileSongName);
             }
 
             songFiles.add(songLocation);
