@@ -26,11 +26,6 @@ public final class Constants {
                     .addFlag(Flag.literal("--extract-audio"))
                     .addOption(Option.literal("--audio-format", "\"%s\"".formatted(ytdlpWorstVideoBestVideoFileFormat)))
                     .addOption(Option.literal("--audio-quality", "\"0\""))
-                    .addFlag(Flag.literal("--dump-single-json"))
-                    .addFlag(Flag.literal("--no-simulate"))
-                    .addOption(Option.literal("--progress-template", """
-                            {"progressPercentage": "%%(progress._percent_str)s", "progressTotal": "%%(progress._total_bytes_str)s", "speed":"%%(progress._speed_str)s", "ETA": "%%(progress._eta_str)s"}
-                            """))
                     .build();
 
     public static final String wingetCommand = "winget";

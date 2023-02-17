@@ -50,7 +50,7 @@ public class YouTubeApi { // TODO: multithreading search & download
     public String searchSong(String song) throws IOException, InterruptedException {
         String songId = "";
         Command command = new Command.CommandBuilder(Constants.ytdlpSearchCommand)
-                .addWord(Word.literal("\"%s\"".formatted(song)))
+                .addWord(Word.literal("\"%s\"".formatted(song.replace(":", ""))))
                 .build();
 
         Process ytdlpProcess = new ProcessBuilder(command.asArray())

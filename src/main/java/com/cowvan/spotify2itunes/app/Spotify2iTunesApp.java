@@ -105,9 +105,9 @@ public class Spotify2iTunesApp {
             Tag songTag = song.getTag();
 
             songTag.setField(FieldKey.TITLE, playlist.playlistData().songs()[i].title());
-            songTag.setField(FieldKey.ARTIST, String.join(", ", playlist.playlistData().songs()[i].artists()));
+            songTag.setField(FieldKey.ARTIST, String.join(" & ", playlist.playlistData().songs()[i].artists()));
             songTag.setField(FieldKey.ALBUM, playlist.playlistData().songs()[i].album());
-            songTag.setField(FieldKey.ALBUM_ARTIST, String.join(", ", playlist.playlistData().songs()[i].albumArtists()));
+            songTag.setField(FieldKey.ALBUM_ARTIST, String.join(" & ", playlist.playlistData().songs()[i].albumArtists()));
 //            songTag.setField(FieldKey.LYRICS); TODO
 
             URL imageUrl = new URL(playlist.playlistData().songs()[i].imageUrl());
